@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const connectDB = require("./src/services/Config/Database.config"); 
 const userRouter = require("./src/services/Route/User.route");
-
+const carsRouter=require("./src/services/Route/Cars.route")
 const app = express();
 
 // 1. Middlewares
@@ -21,6 +21,7 @@ app.use(cors({
 // 3. Routes
 
 app.use("/ECOMERACE/user", userRouter);
+app.use("/ECOMERACE/cars", carsRouter);
 
 // 4. Global Error Handler
 app.use((err, req, res, next) => {
