@@ -1,3 +1,6 @@
+const dns = require("node:dns");
+dns.setDefaultResultOrder("ipv4first");
+require("node:dns/promises").setServers(["1.1.1.1", "1.0.0.1"]);
 const dotenv = require("dotenv");
 dotenv.config();
 const {createServer}= require("http")
@@ -40,3 +43,4 @@ httpServer.listen(PORT, () => {
     connectDB();
     console.log(`Server running on port ${PORT}`);
 });
+module.exports = app;
