@@ -7,7 +7,8 @@ const {
     deleteAccount,
     getAllUsers,
     logout,
-    googleLogin
+    googleLogin,
+    updateLocation
 } = require("../Controller/User.controller");
 
 const { protect } = require("../Middleware/Auth.middleware"); 
@@ -22,7 +23,7 @@ router.get('/logout', logout);
 //protected routes
 router.put('/update-password', protect, updatePassword);
 router.delete('/delete-account', protect, deleteAccount);
-
+router.patch("/update-location", protect, updateLocation);
 // --- Admin/Special Routes ---
 router.get('/all-users', protect, getAllUsers); 
 

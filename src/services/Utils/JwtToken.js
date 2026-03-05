@@ -10,16 +10,16 @@ const sendToken = (user, statusCode, res) => {
         httpOnly: true, 
     };
 
-    res.status(statusCode).cookie("token", token, options).json({
-        success: true,
-        message: "Logged in successfully",
-        user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-        },
-        token,
-    });
+        res.status(statusCode).cookie("token", token, options).json({
+            success: true,
+            message: "Logged in successfully",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+            },
+            token,
+        });
 };
 
 module.exports = { sendToken };

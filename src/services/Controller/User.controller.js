@@ -186,7 +186,6 @@ const verifyUser = async (req, res, next) => {
 
 // google auth configuration
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
 const googleLogin = async (req, res, next) => {
     try {
         const { token } = req.body;
@@ -195,29 +194,82 @@ const googleLogin = async (req, res, next) => {
             return res.status(400).json({ message: "Google token is missing" });
         }
 
+        // 1. Google se token verify karna
         const ticket = await client.verifyIdToken({
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID
         });
 
-        const { name, email, picture } = ticket.getPayload();
+        const payload = ticket.getPayload();
+        const { name, email, sub } = payload; 
 
         let user = await User.findOne({ email });
 
         if (!user) {
+            const randomPassword = Math.random().toString(36).slice(-10);
+            const hashedRandomPass = await hashPassword(randomPassword);
+
             user = await User.create({
                 name,
                 email,
                 isVerified: true,
-                googleId: name,
-                password: Math.random().toString(36).slice(-10)
+                googleId: sub, 
+                password: hashedRandomPass
             });
         }
-
         sendToken(user, 200, res);
 
     } catch (error) {
+        console.error("Google Auth Error:", error);
+        res.status(401).json({
+            status: false,
+            message: "Google authentication failed"
+        });
+    }
+};
+
+const updateLocation = async (req, res, next) => {
+    try {
+        const { lat, lng } = req.body;
+        const userId = req.user._id;
+        const longitude = Number(lng);
+        const latitude = Number(lat);
+
+        if (isNaN(longitude) || isNaN(latitude)) {
+            return res.status(400).json({ status: false, message: "Invalid coordinates" });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                $set: {
+                    location: {
+                        type: "Point",
+                        coordinates: [longitude, latitude] 
+                    }
+                }
+            },
+            { 
+                returnDocument: 'after',
+                runValidators: true 
+            }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ status: false, message: "User not found" });
+        }
+
+        console.log("Location Saved Successfully in DB:", updatedUser.location);
+
+        return res.status(200).json({
+            status: true,
+            message: "Location updated successfully",
+            data: updatedUser.location
+        });
+
+    } catch (error) {
+        console.error("Mongoose Error:", error);
         next(error);
     }
 };
-module.exports = { registerUser, loginUser, updatePassword, deleteAccount, getAllUsers, logout, verifyUser, googleLogin };
+module.exports = { registerUser, loginUser, updatePassword, deleteAccount, getAllUsers, logout, verifyUser, googleLogin,updateLocation };
