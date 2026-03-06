@@ -7,7 +7,8 @@ const initSocket=(httpserver)=>{
             origin: process.env.FRONTEND_URL || "http://localhost:5173",
             methods: ["GET", "POST"],
             credentials:true
-        }
+        },
+        transports: ["polling", "websocket"]
     })
     io.on("connection",(socket)=>{
         console.log(" Socket connected successfully, Socket ID:", socket.id)
