@@ -23,11 +23,7 @@ app.use((err, req, res, next) => {
 
 app.use(
   cors({
-<<<<<<< HEAD
     origin: process.env.FRONTEND_URL || '*',
-=======
-    origin: process.env.FRONTEND_URL || "*",
->>>>>>> 3c945bb108c25f5d3ed7a740db47ffeef3285b3f
     credentials: true,
   }),
 );
