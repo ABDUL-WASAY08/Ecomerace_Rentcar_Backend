@@ -1,6 +1,3 @@
-const dns = require("node:dns");
-dns.setDefaultResultOrder("ipv4first");
-require("node:dns/promises").setServers(["1.1.1.1", "1.0.0.1"]);
 const dotenv = require("dotenv");
 dotenv.config();
 const { createServer } = require("http");
@@ -21,7 +18,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL || "*",
     credentials: true,
   }),
 );
