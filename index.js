@@ -34,7 +34,6 @@ app.use("/ECOMERACE/user", userRouter);
 app.use("/ECOMERACE/cars", carsRouter);
 app.use("/ECOMERACE/rent", RentalRouter);
 app.use("/ECOMERACE/notifications", NotificationRouter);
-
 // 4. Global Error Handler
 app.use((err, req, res, next) => {
   const status = err.status || 500;
